@@ -1,8 +1,8 @@
 ---
 name: Text-Template-Inline
-version: 0.12
+version: 0.13
 author:
-abstract: Quick and easy formatting of data
+abstract: Easy formatting of hierarchical data
 license: perl
 requires:
   Scalar::Util: 0
@@ -16,6 +16,6 @@ meta-spec:
 provides:
   Text::Template::Inline:
     file: lib/Text/Template/Inline.pm
-    version: 0.12
+    version: 0.13
 resources:
   license: http://dev.perl.org/licenses/

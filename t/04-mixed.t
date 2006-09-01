@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 5;
 use Text::Template::Inline;
 
 package TestObj;
@@ -35,10 +35,5 @@ is render($hashref,'{y.b1.m}'), '{y.b1.m}', 'traversal to wrong key type';
 
 eval { render $obj,'{h.b.y}' }; my $line = __LINE__;
 ok $@ =~ /$0 line $line$/, 'traversal failure with context';
-
-{
-    local $Text::Template::Inline::KEY_PATH_SEP = qr/::/;
-    is render($obj, '{h::a1::03} {h::b1::1}'), 'three one', 'custom path separator';
-}
 
 # vi:filetype=perl ts=4 sts=4 et bs=2:

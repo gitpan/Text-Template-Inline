@@ -1,16 +1,15 @@
 NAME
-    Text::Template::Inline - Quick and easy formatting of data
+    Text::Template::Inline - Easy formatting of hierarchical data
 
 SYNOPSIS
-     use Text::Template::Inline;
+     # you can import any name you want instead of "render"
+     use Text::Template::Inline 'render';
 
-     # yields "\nReplace things and stuff.\n"
+     # yields "Replace things and stuff."
      render {
         foo => 'things',
         bar => 'stuff',
-     }, <<'END';
-     Replace {foo} and {bar}.
-     END
+     }, q<Replace {foo} and {bar}.>;
 
      # yields "Three Two One Zero"
      render [qw/ Zero One Two Three /], '{3} {2} {1} {0}';
@@ -30,19 +29,28 @@ SYNOPSIS
         c => { f => [qw/ zero one two three /], },
      } => '{a.d} {b.e} {c.f.3}';
 
-     # you can use a different key path separator as well,
-     # the following also yields "one two three"
-     local $Text::Template::Inline::KEY_PATH_SEP = qr/::/;
+     # there's also an automatic unindent feature that
+     # lines up to the least-indented line in the template:
      render {
         a => { d => 'one' },
         b => { e => 'two' },
-        c => { f => { g => 'three' }, },
-     } => '{a::d} {b::e} {c::f::g}';
+        c => { f => [qw/ zero one two three /], },
+     } => q{
+        {a.d}
+          {b.e}
+            {c.f.3}
+     };
+     # the above results in this:
+     'one
+       two
+         three
+     '
 
 DESCRIPTION
     This module exports a fuction "render" that substitutes identifiers of
     the form "{key}" with corresponding values from a hashref, listref or
-    blessed object.
+    blessed object. It has features that work well with inline documents
+    like heredocs, such as automatic unindent.
 
     The implementation is very small and simple. The small amount of code is
     easy to review, and the resource cost of using this module is minimal.
@@ -54,8 +62,10 @@ DESCRIPTION
     render ( $data, $template )
         Each occurrence in $template of the form "{key}" will be substituted
         with the corresponding value from $data. If there is no such value,
-        the substitution will not be performed. The resulting string is
-        returned.
+        no substitution will be performed.
+
+        First $template is intelligently unindented and leading or trailing
+        newlines are trimmed.
 
         If $data is a blessed object, the keys in $template correspond to
         accessor methods. These methods should return a scalar when called
@@ -69,10 +79,23 @@ DESCRIPTION
         the indices of that list. Keys that contain non-digit characters are
         not replaced.
 
+        The modified $template string is then returned.
+
+REQUIRES
+    Scalar::Util
+
+    Test::More and Test::Exception (for installation)
+
 BUGS
     If you find a bug in Text::Template::Inline please report it to the
     author.
 
 AUTHOR
-     Zack Hobson <zhobson@gmail.com>
+     Zack Hobson <zgh@cpan.org>
+
+COPYRIGHT
+    Copyright 2006 Zack Hobson. All rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 

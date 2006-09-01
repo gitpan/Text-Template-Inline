@@ -1,4 +1,5 @@
 Build.PL
+Changes
 INSTALL
 lib/Text/Template/Inline.pm
 Makefile.PL
@@ -9,3 +10,5 @@ t/01-basic.t
 t/02-list.t
 t/03-object.t
 t/04-mixed.t
+t/05-indent.t
+t/06-import.t
